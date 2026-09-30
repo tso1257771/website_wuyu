@@ -138,7 +138,7 @@ h1 em { font-style: normal; color: var(--color-accent); }
 
 /* roadmap: the monitoring chain. inputs -> five stages -> real-time catalog; uses below */
 .roadmap { margin: 0; border-top: 1px solid var(--color-foreground); padding-top: var(--space-lg); display: grid; gap: var(--space-lg); }
-.rm-flow { display: grid; grid-template-columns: 10.5rem minmax(0, 1fr) 14rem; gap: var(--space-md); align-items: stretch; }
+.rm-flow { display: grid; grid-template-columns: 10.5rem 12rem minmax(0, 1fr); gap: var(--space-md); align-items: start; }
 .rm-lab { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-muted-foreground); }
 .rm-in { display: grid; gap: var(--space-sm); align-content: start; }
 .src { border: 1px solid var(--color-border); background: var(--color-card); padding: var(--space-sm) var(--space-md); display: grid; gap: 2px; border-radius: var(--radius); }
@@ -146,36 +146,38 @@ h1 em { font-style: normal; color: var(--color-accent); }
 .src small { font-size: 0.75rem; color: var(--color-muted-foreground); line-height: 1.35; }
 .src.das { border-color: var(--ch5); }
 .src.das b { color: var(--ch5); }
-.rm-stages { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-md); }
-.stage { --c: var(--ch1); position: relative; display: grid; gap: var(--space-sm); align-content: start; padding-top: var(--space-md); border-top: 3px solid var(--c); min-width: 0; }
-.stage::after { content: "→"; position: absolute; right: calc(var(--space-md) * -0.85); top: -0.8rem; font-family: var(--font-mono); font-size: 0.9rem; color: var(--color-muted-foreground); background: var(--color-background); padding-inline: 2px; }
-.stage:last-child::after { content: none; }
-.stage .sn { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: var(--c); }
+.stage { --c: var(--ch1); display: grid; gap: var(--space-sm); align-content: start; padding-top: var(--space-md); border-top: 3px solid var(--c); min-width: 0; }
+.stage .sn { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--c); }
 .stage .st { font-weight: 700; line-height: 1.2; }
 .stage .dl { justify-self: start; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; background: var(--c); color: var(--color-background); padding: 1px var(--space-xs); border-radius: var(--radius); }
 .items { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); }
 .items li { font-size: 0.78rem; line-height: 1.4; color: var(--color-muted-foreground); padding-left: 0.9rem; position: relative; }
 .items li::before { content: ""; position: absolute; left: 0; top: 0.42em; width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--color-foreground)); }
 .items li.dev::before { background: transparent; border: 1.5px solid var(--c, var(--color-foreground)); }
-.rm-out { align-self: start; background: var(--color-foreground); color: var(--color-background); padding: var(--space-md); display: grid; gap: var(--space-sm); align-content: start; border-radius: var(--radius); }
-.rm-out .rm-lab { color: inherit; opacity: 0.75; }
-.rm-out b { font-size: 1.15rem; line-height: 1.2; }
-.rm-out p { font-size: 0.8rem; line-height: 1.45; opacity: 0.85; }
+.rm-tracks { display: grid; gap: var(--space-md); min-width: 0; }
+.track { display: grid; grid-template-columns: minmax(0, 1fr) 12.5rem; gap: var(--space-md); padding: var(--space-md); background: var(--color-card); border: 1px solid var(--color-border); border-left: 3px solid var(--t); border-radius: var(--radius); }
+.track-head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-xs) var(--space-md); }
+.track-head b { font-size: 1.05rem; color: var(--t); }
+.track-head .goal { font-size: 0.82rem; color: var(--color-muted-foreground); }
+.t-stages { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr)); gap: var(--space-md); }
+.t-stages .stage { --c: var(--t); }
+.rm-out { align-self: start; background: var(--color-foreground); color: var(--color-background); padding: var(--space-md); display: grid; gap: var(--space-sm); border-radius: var(--radius); }
+.rm-out.eew { background: var(--ch5); }
+.rm-out .rm-lab { color: inherit; opacity: 0.8; }
+.rm-out b { font-size: 1.05rem; line-height: 1.2; }
 .rm-out .wip { justify-self: start; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px dashed currentColor; padding: 1px var(--space-xs); }
-.rm-out ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-xs); font-size: 0.8rem; }
-.rm-out li::before { content: "→ "; font-family: var(--font-mono); }
+.fork { font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-muted-foreground); padding-top: var(--space-sm); }
+@media (max-width: 1080px) {
+  .rm-flow { grid-template-columns: 1fr; }
+  .rm-in { grid-template-columns: auto 1fr 1fr 1fr; align-items: stretch; }
+  .track { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) { .rm-in { grid-template-columns: 1fr; } }
 .rm-uses { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-sm) var(--space-lg); padding-block: var(--space-md); border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
 .rm-uses .items { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-lg); --c: var(--color-foreground); }
 .roadmap figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-xs) var(--space-md); font-family: var(--font-mono); font-size: 0.72rem; color: var(--color-muted-foreground); }
 .legend { display: inline-flex; gap: var(--space-md); }
 .legend .items { display: inline-flex; gap: var(--space-md); --c: var(--color-muted-foreground); }
-@media (max-width: 1080px) {
-  .rm-flow { grid-template-columns: 1fr; }
-  .rm-in { grid-template-columns: auto 1fr 1fr; align-items: stretch; }
-  .rm-stages { grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); row-gap: var(--space-lg); }
-  .stage::after { content: none; }
-}
-@media (max-width: 560px) { .rm-in { grid-template-columns: 1fr; } }
 
 .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid var(--color-border); }
 .stats div { padding: var(--space-lg) var(--space-md) var(--space-lg) 0; display: grid; gap: var(--space-xs); }
@@ -307,7 +309,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       <div class="eyebrow"><span class="live">Now at IES, Academia Sinica</span><span>Earthquake catalogs</span><span>Seismotectonics</span><span>Deep learning</span><span>DAS</span></div>
       <h1>Earthquake science starts with the <em>catalog.</em></h1>
       <div class="hero-row">
-        <p class="lede">I am Wu-Yu Liao, a seismologist at the Institute of Earth Sciences, Academia Sinica, Taipei. I use earthquake catalogs to study active faults, earthquake sequences, and the crust beneath Taiwan. To get catalogs good enough for that, I build the monitoring behind them, with deep learning to detect earthquakes and pick phases. At IES I am adding distributed acoustic sensing.</p>
+        <p class="lede">I am Wu-Yu Liao, a seismologist at the Institute of Earth Sciences, Academia Sinica, Taipei. I use earthquake catalogs to study active faults, earthquake sequences, and the crust beneath Taiwan. To get catalogs good enough for that, I build the monitoring behind them, with deep learning to detect earthquakes and pick phases, toward real-time cataloging and earthquake early warning. At IES I am adding distributed acoustic sensing.</p>
         <div class="links">
           <a class="btn" href="https://scholar.google.com/citations?user=8yUmjUsAAAAJ" target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>Scholar</a>
@@ -327,29 +329,38 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
             <div class="src das"><b>DAS fiber</b><small>added at IES, 2026</small></div>
             <div class="src"><b>Dataset infrastructure</b><small>training and benchmark data for the models · in development</small></div>
           </div>
-          <ol class="rm-stages" aria-label="Monitoring stages">
-            <li class="stage" style="--c: var(--ch1)"><span class="sn">01</span><span class="st">Detect &amp; pick</span><span class="dl">Deep learning</span>
-              <ul class="items"><li>ARRU Phase Picker, 2021</li><li>RED-PAN, real time, 2022</li><li>RockNet, rockfalls, 2023</li><li class="dev">First-motion polarity</li></ul></li>
-            <li class="stage" style="--c: var(--ch2)"><span class="sn">02</span><span class="st">Associate</span>
-              <ul class="items"><li>Backprojection of phase probabilities, 2022</li><li>GPU monitoring, Ridgecrest, 2020</li><li class="dev">Robust association</li></ul></li>
-            <li class="stage" style="--c: var(--ch3)"><span class="sn">03</span><span class="st">Locate</span>
-              <ul class="items"><li>Early warning location, 2024</li><li class="dev">3-D location</li></ul></li>
-            <li class="stage" style="--c: var(--ch4)"><span class="sn">04</span><span class="st">Source characteristics</span>
-              <ul class="items"><li>Rapid magnitude for early warning, 2026</li><li class="dev">Magnitude and focal mechanism</li></ul></li>
-            <li class="stage" style="--c: var(--ch5)"><span class="sn">05</span><span class="st">Real-time operation</span>
-              <ul class="items"><li class="dev">Streaming detection to catalog</li><li class="dev">Early warning branch</li></ul></li>
-          </ol>
-          <div class="rm-out">
-            <span class="rm-lab">Final product</span>
-            <b>Real-time earthquake cataloging for Taiwan</b>
-            <span class="wip">In development</span>
+          <div class="stage" style="--c: var(--ch1)">
+            <span class="sn">Shared foundation</span><span class="st">Detect &amp; pick</span><span class="dl">Deep learning</span>
+            <ul class="items"><li>ARRU Phase Picker, 2021</li><li>RED-PAN, real time, 2022</li><li>RockNet, rockfalls, 2023</li><li class="dev">First-motion polarity</li></ul>
+            <span class="fork">feeds two separate systems →</span>
+          </div>
+          <div class="rm-tracks">
+            <div class="track" style="--t: var(--ch2)">
+              <div class="track-head"><span class="rm-lab">Track A</span><b>Real-time earthquake cataloging</b><span class="goal">Goal: complete and accurate catalogs for science</span></div>
+              <ol class="t-stages" aria-label="Cataloging stages">
+                <li class="stage"><span class="st">Associate</span><ul class="items"><li>Backprojection of phase probabilities, 2022</li><li>GPU monitoring, Ridgecrest, 2020</li><li class="dev">Robust association</li></ul></li>
+                <li class="stage"><span class="st">Locate</span><ul class="items"><li class="dev">3-D location</li></ul></li>
+                <li class="stage"><span class="st">Source characteristics</span><ul class="items"><li class="dev">Magnitude</li><li class="dev">Focal mechanism</li></ul></li>
+              </ol>
+              <div class="rm-out"><span class="rm-lab">Final product</span><b>Real-time earthquake catalog for Taiwan</b><span class="wip">In development</span></div>
+            </div>
+            <div class="track" style="--t: var(--ch5)">
+              <div class="track-head"><span class="rm-lab">Track B</span><b>Earthquake early warning</b><span class="goal">Goal: location and magnitude within seconds, before strong shaking</span></div>
+              <ol class="t-stages" aria-label="Early warning stages">
+                <li class="stage"><span class="st">First P arrivals</span><ul class="items"><li>Real-time picking, RED-PAN, 2022</li></ul></li>
+                <li class="stage"><span class="st">Rapid location</span><ul class="items"><li>ML + EDT with dense arrays, 2024</li></ul></li>
+                <li class="stage"><span class="st">Rapid magnitude</span><ul class="items"><li>Multi-station deep learning, 2026</li></ul></li>
+                <li class="stage"><span class="st">Alerts</span><ul class="items"><li class="dev">Real-time alert delivery</li></ul></li>
+              </ol>
+              <div class="rm-out eew"><span class="rm-lab">Final product</span><b>Earthquake early warning for Taiwan</b><span class="wip">In development</span></div>
+            </div>
           </div>
         </div>
         <div class="rm-uses">
-          <span class="rm-lab">Science it serves</span>
+          <span class="rm-lab">Catalogs serve</span>
           <ul class="items"><li>Seismogenic structure</li><li>Earthquake sequences</li><li>Crustal structure</li><li>Slope failure</li><li class="dev">Fault models</li></ul>
         </div>
-        <figcaption id="rm-cap"><span>Roadmap · seismic monitoring chain, with deep learning at the first stage</span><span class="legend"><ul class="items"><li>published or released</li><li class="dev">in development</li></ul></span></figcaption>
+        <figcaption id="rm-cap"><span>Roadmap · deep learning picking shared by two systems: real-time cataloging for science and earthquake early warning for hazard reduction</span><span class="legend"><ul class="items"><li>published or released</li><li class="dev">in development</li></ul></span></figcaption>
       </figure>
       <div class="stats" aria-label="Summary">
         <div><b>14</b><span>peer-reviewed papers</span></div>
@@ -433,11 +444,11 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </article>
 
     <article class="chapter reveal" style="--ch: var(--ch3)" aria-labelledby="ch3">
-      <div class="rail"><span class="num">03</span><span class="yrs">2024–2026</span><span class="bar-ch"></span></div>
+      <div class="rail"><span class="num">03</span><span class="yrs">2024–now</span><span class="bar-ch"></span></div>
       <div class="ch-body">
         <span class="tag">Earthquake early warning</span>
         <h3 id="ch3">Location and magnitude within seconds</h3>
-        <p>Early warning needs a location and a magnitude from the first seconds of P waves. Machine learning combined with the equal differential time method locates events from the first P arrivals of dense arrays in Taiwan. A multi-station deep learning model in the frequency domain estimates magnitude for early warning.</p>
+        <p>Early warning needs a location and a magnitude from the first seconds of P waves. Machine learning combined with the equal differential time method locates events from the first P arrivals of dense arrays in Taiwan. A multi-station deep learning model in the frequency domain estimates magnitude for early warning. A real-time early warning system for Taiwan built on these methods is in development.</p>
         <ul class="papers">
           <li>Hypocenter location for early warning with dense arrays · Earth, Planets and Space, 2024</li>
           <li>Rapid magnitude estimation for Taiwan earthquake early warning · TAO, 2026</li>
