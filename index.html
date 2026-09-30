@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wu-Yu Liao</title>
+<meta name="description" content="Wu-Yu Liao, Ph.D. Postdoctoral researcher at the Institute of Earth Sciences, Academia Sinica. Deep learning seismic monitoring, distributed acoustic sensing (DAS), earthquake detection, phase picking, and catalog building.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Design system: ui-ux-pro-max, design-system/wu-yu-liao/MASTER.md
+   Style: Minimalism & Swiss. Scholarly navy + citation gold. Crimson Pro / Atkinson Hyperlegible.
+   Layout: one reading column (max 60rem) with a mono date gutter; hero opens on a seismogram with P and S picks. */
+:root {
+  --color-background: #F8FAFC;
+  --color-card: #FFFFFF;
+  --color-foreground: #0F172A;
+  --color-muted: #E9EEF5;
+  --color-muted-foreground: #475569;
+  --color-border: #CBD5E1;
+  --color-primary: #1E3A5F;
+  --color-on-primary: #FFFFFF;
+  --color-accent: #B45309;
+  --color-accent-soft: #FEF3E2;
+  --color-ring: #1E3A5F;
+  --color-trace: #1E3A5F;
+
+  --font-display: "Crimson Pro", "Iowan Old Style", Georgia, serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --space-xs: 0.25rem; --space-sm: 0.5rem; --space-md: 1rem; --space-lg: 1.5rem;
+  --space-xl: 2rem; --space-2xl: 3rem; --space-3xl: 4rem;
+
+  --text-sm: 0.875rem; --text-base: 1.0625rem; --text-lg: 1.3rem; --text-xl: 1.75rem;
+  --text-hero: clamp(2.4rem, 5vw + 1rem, 3.6rem);
+
+  --radius-sm: 4px; --radius-md: 8px; --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px rgba(15, 23, 42, 0.08);
+  --ease: 200ms ease;
+  --bar-h: 3.5rem;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-background: #0B1220; --color-card: #111A2B; --color-foreground: #E2E8F0;
+    --color-muted: #1B2638; --color-muted-foreground: #9AA8BC; --color-border: #26354A;
+    --color-primary: #9CC0EA; --color-on-primary: #0B1220; --color-accent: #F0A95B;
+    --color-accent-soft: #2A2013; --color-ring: #9CC0EA; --color-trace: #B9D3F0;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4); --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --color-background: #0B1220; --color-card: #111A2B; --color-foreground: #E2E8F0;
+  --color-muted: #1B2638; --color-muted-foreground: #9AA8BC; --color-border: #26354A;
+  --color-primary: #9CC0EA; --color-on-primary: #0B1220; --color-accent: #F0A95B;
+  --color-accent-soft: #2A2013; --color-ring: #9CC0EA; --color-trace: #B9D3F0;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4); --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: calc(var(--bar-h) + var(--space-md)); }
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--color-primary); text-decoration-thickness: 1px; text-underline-offset: 3px; cursor: pointer; transition: color var(--ease); }
+a:hover { color: var(--color-accent); }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 3px; border-radius: var(--radius-sm); }
+img { max-width: 100%; }
+p { margin: 0; }
+
+.skip {
+  position: absolute; left: var(--space-md); top: -100px; z-index: 20;
+  background: var(--color-primary); color: var(--color-on-primary); padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm); text-decoration: none;
+}
+.skip:focus { top: calc(env(safe-area-inset-top, 0px) + var(--space-sm)); color: var(--color-on-primary); }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.wrap { max-width: 60rem; margin: 0 auto; padding-inline: clamp(1rem, 4vw, 2rem); }
+
+/* ---- sticky bar ---- */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: color-mix(in srgb, var(--color-background) 90%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+}
+.bar .wrap { display: flex; align-items: center; gap: var(--space-md); min-height: var(--bar-h); }
+.mark { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; color: var(--color-foreground); text-decoration: none; white-space: nowrap; margin-right: auto; }
+.bar nav { display: flex; gap: var(--space-xs); }
+.bar nav a {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-sm);
+  font-size: var(--text-sm); color: var(--color-muted-foreground); text-decoration: none;
+  border-radius: var(--radius-sm); white-space: nowrap; transition: color var(--ease), background-color var(--ease);
+}
+.bar nav a:hover { color: var(--color-foreground); background: var(--color-muted); }
+.theme-btn {
+  flex: none; width: 44px; height: 44px; display: grid; place-items: center;
+  border: 1px solid var(--color-border); border-radius: 50%; background: var(--color-card); color: var(--color-foreground);
+  transition: border-color var(--ease), background-color var(--ease);
+}
+.theme-btn:hover { border-color: var(--color-primary); }
+.theme-btn:active { background: var(--color-muted); }
+.theme-btn svg { width: 18px; height: 18px; }
+.theme-btn .sun { display: none; }
+:root[data-theme="dark"] .theme-btn .sun { display: block; }
+:root[data-theme="dark"] .theme-btn .moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-btn .sun { display: block; }
+  :root:not([data-theme="light"]) .theme-btn .moon { display: none; }
+}
+/* phones: section links move to a second row that scrolls sideways inside itself */
+@media (max-width: 720px) {
+  .bar .wrap { flex-wrap: wrap; row-gap: 0; }
+  .bar nav { order: 3; width: 100%; overflow-x: auto; scrollbar-width: none; margin-inline: calc(var(--space-sm) * -1); }
+  .bar nav::-webkit-scrollbar { display: none; }
+  html { scroll-padding-top: calc(var(--bar-h) + 44px + var(--space-md)); }
+}
+
+/* ---- hero ---- */
+.hero { padding-block: var(--space-3xl) var(--space-2xl); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
+.eyebrow { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-accent); }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: var(--text-hero); line-height: 1.02; letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+.lede { font-size: var(--text-lg); line-height: 1.5; color: var(--color-muted-foreground); max-width: 40rem; }
+.lede strong { color: var(--color-foreground); font-weight: 700; }
+.links { display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.links a {
+  display: inline-flex; align-items: center; gap: var(--space-sm); min-height: 44px; padding: 0 var(--space-md);
+  border: 1px solid var(--color-border); border-radius: var(--radius-pill); background: var(--color-card);
+  color: var(--color-foreground); text-decoration: none; font-size: var(--text-sm);
+  transition: border-color var(--ease), color var(--ease);
+}
+.links a:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.links a:active { background: var(--color-muted); }
+.links svg { width: 16px; height: 16px; flex: none; }
+
+.seis { margin: 0; border: 1px solid var(--color-border); background: var(--color-card); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); }
+.seis canvas { display: block; width: 100%; height: clamp(170px, 26vw, 240px); }
+.seis figcaption {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-xs) var(--space-md);
+  font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-muted-foreground);
+  padding: var(--space-sm) var(--space-md); border-top: 1px solid var(--color-border);
+}
+.facts { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-xl); margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); color: var(--color-muted-foreground); }
+.facts b { font-family: var(--font-display); font-size: 1.5rem; color: var(--color-foreground); font-weight: 600; margin-right: var(--space-xs); font-variant-numeric: tabular-nums; }
+
+/* ---- sections ---- */
+section { padding-block: var(--space-2xl); border-top: 1px solid var(--color-border); }
+h2 { font-family: var(--font-display); font-weight: 600; font-size: var(--text-xl); line-height: 1.15; margin: 0 0 var(--space-lg); text-wrap: balance; }
+h3 { font-family: var(--font-display); font-weight: 600; font-size: var(--text-lg); line-height: 1.25; margin: 0; text-wrap: balance; }
+.tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent); }
+
+.themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: var(--space-xl) var(--space-2xl); }
+.theme { display: grid; gap: var(--space-sm); align-content: start; min-width: 0; }
+.theme p { color: var(--color-muted-foreground); }
+.code-links { display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-md); font-size: var(--text-sm); }
+.code-links a { display: inline-flex; align-items: center; min-height: 44px; }
+
+/* current work: the one card-styled block on the page */
+.now {
+  grid-column: 1 / -1; display: grid; gap: var(--space-sm);
+  padding: var(--space-lg); background: var(--color-card); border: 1px solid var(--color-border);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-md);
+}
+.now .tag::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); margin-right: var(--space-sm); vertical-align: 1px; }
+.now p { color: var(--color-muted-foreground); max-width: 46rem; }
+.now ul { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: var(--space-sm); }
+.now li { font-size: var(--text-sm); padding: var(--space-xs) var(--space-md); border-radius: var(--radius-pill); background: var(--color-muted); color: var(--color-foreground); }
+
+/* ---- publications ---- */
+.pub-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-lg); }
+.pub-head h2 { margin: 0; }
+.seg { display: inline-flex; border: 1px solid var(--color-border); border-radius: var(--radius-pill); padding: 2px; background: var(--color-card); }
+.seg button {
+  font: inherit; font-size: var(--text-sm); border: 0; background: transparent; color: var(--color-muted-foreground);
+  padding: 0 var(--space-md); min-height: 44px; border-radius: var(--radius-pill);
+  transition: background-color var(--ease), color var(--ease);
+}
+.seg button:hover { color: var(--color-foreground); }
+.seg button[aria-pressed="true"] { background: var(--color-primary); color: var(--color-on-primary); }
+.pubs { list-style: none; margin: 0; padding: 0; display: grid; }
+.pub { display: grid; grid-template-columns: 3.5rem 1fr; gap: var(--space-xs) var(--space-md); padding-block: var(--space-md); border-bottom: 1px solid var(--color-border); }
+.pub:last-child { border-bottom: 0; }
+.pub .yr { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-muted-foreground); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+.pub .body { min-width: 0; display: grid; gap: var(--space-xs); }
+.pub .title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; line-height: 1.3; }
+.pub .authors { font-size: var(--text-sm); color: var(--color-muted-foreground); }
+.pub .authors u { color: var(--color-foreground); font-weight: 700; text-decoration-color: var(--color-accent); text-underline-offset: 3px; }
+.pub .venue { font-size: var(--text-sm); font-style: italic; color: var(--color-muted-foreground); }
+.badge {
+  justify-self: start; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--color-accent); background: var(--color-accent-soft); padding: 2px var(--space-sm); border-radius: var(--radius-sm);
+}
+.pub-note { font-size: var(--text-sm); color: var(--color-muted-foreground); margin-top: var(--space-md); }
+
+/* ---- timelines ---- */
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: var(--space-2xl); }
+.two > div { min-width: 0; }
+.tl { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-lg); }
+.tl li { display: grid; grid-template-columns: 6.5rem 1fr; gap: var(--space-md); }
+.tl .when { font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-accent); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+.tl .what { min-width: 0; display: grid; gap: 2px; }
+.tl .what span, .tl .what i { color: var(--color-muted-foreground); font-size: var(--text-sm); }
+
+.awards { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-sm); }
+.awards li { display: grid; grid-template-columns: 3.5rem 1fr; gap: var(--space-md); }
+.awards .when { font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-muted-foreground); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+
+.review { display: flex; flex-wrap: wrap; gap: var(--space-sm); list-style: none; padding: 0; margin: 0; }
+.review li { font-size: var(--text-sm); border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: var(--space-xs) var(--space-sm); background: var(--color-card); }
+.review li b { font-family: var(--font-mono); color: var(--color-accent); font-weight: 500; margin-left: var(--space-sm); }
+
+.contact { display: grid; gap: var(--space-md); }
+.email-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm) var(--space-md); }
+.email { font-family: var(--font-mono); font-size: 1.05rem; user-select: all; overflow-wrap: anywhere; }
+.copy {
+  font: inherit; font-size: var(--text-sm); font-weight: 700; min-height: 44px; padding: 0 var(--space-lg);
+  border-radius: var(--radius-md); border: 2px solid var(--color-primary); background: transparent; color: var(--color-primary);
+  transition: background-color var(--ease), color var(--ease);
+}
+.copy:hover { background: var(--color-primary); color: var(--color-on-primary); }
+.copy:active { opacity: 0.85; }
+
+footer { border-top: 1px solid var(--color-border); padding-block: var(--space-xl) var(--space-2xl); font-size: var(--text-sm); color: var(--color-muted-foreground); }
+
+@media (max-width: 480px) {
+  .hero { padding-block: var(--space-2xl) var(--space-xl); }
+  .tl li { grid-template-columns: 1fr; gap: 2px; }
+  .pub { grid-template-columns: 1fr; }
+  .now { padding: var(--space-md); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="mark" href="#top">Wu-Yu Liao</a>
+    <nav aria-label="Sections">
+      <a href="#research">Research</a>
+      <a href="#publications">Publications</a>
+      <a href="#experience">Experience</a>
+      <a href="#awards">Awards</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <div class="hero" id="top">
+    <span class="eyebrow">Seismology · Deep learning · DAS</span>
+    <h1>Wu-Yu Liao, Ph.D.</h1>
+    <p class="lede">Postdoctoral researcher at the Institute of Earth Sciences, Academia Sinica, Taipei. I build <strong>deep learning methods that detect earthquakes and pick seismic phases on continuous records</strong>, and I now apply them to <strong>distributed acoustic sensing (DAS)</strong> together with regional seismic networks.</p>
+    <div class="links">
+      <a href="https://scholar.google.com/citations?user=8yUmjUsAAAAJ" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
+        Google Scholar</a>
+      <a href="https://orcid.org/0000-0003-2353-7006" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 10v7M8 7v.01M12 17V9h2.5a4 4 0 0 1 0 8H12z"/></svg>
+        ORCID 0000-0003-2353-7006</a>
+      <a href="https://github.com/tso1257771" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+        GitHub</a>
+      <a href="#contact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+        Email</a>
+    </div>
+
+    <figure class="seis">
+      <canvas id="seis" role="img" aria-label="Illustration of a three-component seismogram with P and S arrival picks and phase probability curves below the traces."></canvas>
+      <figcaption>
+        <span>Illustration · Z / N / E components · P and S picks with phase probability</span>
+        <span>ticks every 10 s</span>
+      </figcaption>
+    </figure>
+
+    <ul class="facts" aria-label="Summary">
+      <li><b>14</b>peer-reviewed papers</li>
+      <li><b>5</b>as first author</li>
+      <li><b>4</b>open-source tools</li>
+      <li><b>11</b>manuscript reviews</li>
+    </ul>
+  </div>
+
+  <section id="research" aria-labelledby="research-h">
+    <h2 id="research-h">Research</h2>
+    <div class="themes">
+      <div class="now">
+        <span class="tag">Current work · IES, Academia Sinica</span>
+        <h3>Distributed acoustic sensing for seismic monitoring</h3>
+        <p>DAS turns a fiber optic cable into a dense line of seismic sensors. I am developing monitoring with DAS records and linking it to the stations of regional seismic networks, so that fiber and conventional stations contribute to one catalog.</p>
+        <ul aria-label="DAS topics">
+          <li>Phase picking on DAS records</li>
+          <li>Event location</li>
+          <li>Integration with regional seismic networks</li>
+        </ul>
+      </div>
+      <div class="theme">
+        <span class="tag">Phase picking &amp; detection</span>
+        <h3>Deep learning pickers for continuous data</h3>
+        <p>ARRU Phase Picker picks P and S arrivals with an attention recurrent residual U-Net. RED-PAN detects earthquakes and picks phases in real time with a multitask attention network.</p>
+        <div class="code-links">
+          <a href="https://github.com/tso1257771/Attention-Recurrent-Residual-U-Net-for-earthquake-detection" target="_blank" rel="noopener">ARRU code</a>
+          <a href="https://github.com/tso1257771/RED-PAN" target="_blank" rel="noopener">RED-PAN code</a>
+        </div>
+      </div>
+      <div class="theme">
+        <span class="tag">Autonomous networks</span>
+        <h3>From phase probabilities to located events</h3>
+        <p>Backprojecting phase time functions predicted by deep learning detects and locates earthquakes directly on continuous recordings, a step toward seismic networks that run without manual picking.</p>
+        <div class="code-links">
+          <a href="https://github.com/tso1257771/ARRU_seismic_backprojection" target="_blank" rel="noopener">Backprojection code</a>
+        </div>
+      </div>
+      <div class="theme">
+        <span class="tag">Slope failure</span>
+        <h3>Rockfalls and earthquakes in one model</h3>
+        <p>RockNet detects and associates rockfalls and earthquakes through multitask and transfer learning, for seismic monitoring of slope hazards.</p>
+        <div class="code-links">
+          <a href="https://github.com/tso1257771/RockNet" target="_blank" rel="noopener">RockNet code</a>
+        </div>
+      </div>
+      <div class="theme">
+        <span class="tag">Seismotectonics &amp; early warning</span>
+        <h3>Earthquake sequences in Taiwan</h3>
+        <p>A deep learning catalog of the 2025 M6.4 Dapu sequence resolves its seismogenic structure. Related work covers crustal tomography of west-central Taiwan, and hypocenter location and magnitude estimation for earthquake early warning.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="publications" aria-labelledby="pub-h">
+    <div class="pub-head">
+      <h2 id="pub-h">Publications</h2>
+      <div class="seg" role="group" aria-label="Filter publications">
+        <button type="button" id="f-all" aria-pressed="true" data-filter="all">All (14)</button>
+        <button type="button" id="f-first" aria-pressed="false" data-filter="first">First author (5)</button>
+      </div>
+    </div>
+    <ol class="pubs" id="pubs">
+      <li class="pub" data-first="1"><span class="yr">2025</span><div class="body">
+        <span class="badge">First author</span>
+        <span class="title">Fast report: seismogenic structure of the 2025 M6.4 Dapu earthquake sequence in western Taiwan revealed by a deep-learning-empowered earthquake catalog</span>
+        <span class="authors"><u>Liao, W.-Y.</u>, Lee, E.-J., Rau, R.-J., et al.</span>
+        <span class="venue">Terrestrial, Atmospheric and Oceanic Sciences, 36, 10</span></div></li>
+      <li class="pub" data-first="1"><span class="yr">2023</span><div class="body">
+        <span class="badge">First author</span>
+        <span class="title">RockNet: Rockfall and Earthquake Detection and Association via Multitask Learning and Transfer Learning</span>
+        <span class="authors"><u>Liao, W.-Y.</u>, Lee, E.-J., Wang, C.-C., Chen, P., Provost, F., Hibert, C., Malet, J.-P., Chu, C.-R., &amp; Lin, G.-W.</span>
+        <span class="venue">IEEE Transactions on Geoscience and Remote Sensing, 61, 1–12</span></div></li>
+      <li class="pub" data-first="1"><span class="yr">2022</span><div class="body">
+        <span class="badge">First author</span>
+        <span class="title">RED-PAN: Real-Time Earthquake Detection and Phase-Picking With Multitask Attention Network</span>
+        <span class="authors"><u>Liao, W.-Y.</u>, Lee, E.-J., Chen, D.-Y., Chen, P., Mu, D., &amp; Wu, Y.-M.</span>
+        <span class="venue">IEEE Transactions on Geoscience and Remote Sensing, 60, 1–11</span></div></li>
+      <li class="pub" data-first="1"><span class="yr">2022</span><div class="body">
+        <span class="badge">First author</span>
+        <span class="title">Toward Fully Autonomous Seismic Networks: Backprojecting Deep Learning-Based Phase Time Functions for Earthquake Monitoring on Continuous Recordings</span>
+        <span class="authors"><u>Liao, W.-Y.</u>, Lee, E.-J., Mu, D., &amp; Chen, P.</span>
+        <span class="venue">Seismological Research Letters</span></div></li>
+      <li class="pub" data-first="1"><span class="yr">2021</span><div class="body">
+        <span class="badge">First author</span>
+        <span class="title">ARRU Phase Picker: Attention Recurrent-Residual U-Net for Picking Seismic P- and S-Phase Arrivals</span>
+        <span class="authors"><u>Liao, W.-Y.</u>, Lee, E.-J., Mu, D., Chen, P., &amp; Rau, R.-J.</span>
+        <span class="venue">Seismological Research Letters</span></div></li>
+      <li class="pub"><span class="yr">2026</span><div class="body">
+        <span class="title">Rapid magnitude estimation for Taiwan earthquake early warning via frequency-domain multi-station deep learning</span>
+        <span class="authors">Tsai, W.-H., Lee, E.-J., Chen, D.-Y., et al. (incl. <u>Liao, W.-Y.</u>)</span>
+        <span class="venue">Terrestrial, Atmospheric and Oceanic Sciences, 37, 5</span></div></li>
+      <li class="pub"><span class="yr">2025</span><div class="body">
+        <span class="title">Tomographic constraints on a mid-crustal high-velocity body beneath west-central Taiwan: Implications for passive-margin mafic additions</span>
+        <span class="authors">Lee, E.-J., <u>Liao, W.-Y.</u>, Koulakov, I., Chen, P., Chang, S.-P., Chen, D.-Y., et al.</span>
+        <span class="venue">Journal of Geophysical Research: Solid Earth, 130, e2025JB032225</span></div></li>
+      <li class="pub"><span class="yr">2025</span><div class="body">
+        <span class="title">Fast report: Coseismic source model of the January 2025 Mw 6.1 Dapu earthquake from geodetic data and its implications for seismogenic structures in Southwestern Taiwan</span>
+        <span class="authors">Sharma, Y., Ching, K.-E., Chang, W.-L., et al. (incl. <u>Liao, W.-Y.</u>)</span>
+        <span class="venue">Terrestrial, Atmospheric and Oceanic Sciences, 36, 18</span></div></li>
+      <li class="pub"><span class="yr">2025</span><div class="body">
+        <span class="title">Fast report: exploring the 2025 Dapu earthquake sequence using dense array</span>
+        <span class="authors">Lai, C.-N., Liu, Y.-A., Wen, S., et al. (incl. <u>Liao, W.-Y.</u>)</span>
+        <span class="venue">Terrestrial, Atmospheric and Oceanic Sciences, 36, 16</span></div></li>
+      <li class="pub"><span class="yr">2024</span><div class="body">
+        <span class="title">Integration of Machine Learning and Equal Differential Time Method for Enhanced Hypocenter Localization in Earthquake Early Warning Systems: Application to Dense Seismic Arrays in Taiwan</span>
+        <span class="authors">Lian, J.-X., <u>Liao, W.-Y.</u>, Lee, E.-J., Chen, D.-Y., &amp; Chen, P.</span>
+        <span class="venue">Earth, Planets and Space, 76(1)</span></div></li>
+      <li class="pub"><span class="yr">2023</span><div class="body">
+        <span class="title">Cluster Analysis of Slope Hazard Seismic Recordings Based Upon Unsupervised Deep Embedded Clustering</span>
+        <span class="authors">Wang, C.-C., Lee, E.-J., <u>Liao, W.-Y.</u>, Chen, P., Rau, R.-J., Lin, G.-W., &amp; Chu, C.-R.</span>
+        <span class="venue">Seismological Research Letters, 94(4), 1877–1891</span></div></li>
+      <li class="pub"><span class="yr">2022</span><div class="body">
+        <span class="title">Mesh-free simulation of two-phase fluid flow in porous media based on the shock-fitting method</span>
+        <span class="authors">Lee, E.-J., Wang, W., Chen, P., Jiao, Z., Gong, Y., Mu, D., &amp; <u>Liao, W.-Y.</u></span>
+        <span class="venue">Journal of Petroleum Science and Engineering, 215, 110637</span></div></li>
+      <li class="pub"><span class="yr">2020</span><div class="body">
+        <span class="title">GPU-Accelerated Automatic Microseismic Monitoring Algorithm (GAMMA) and Its Application to the 2019 Ridgecrest Earthquake Sequence</span>
+        <span class="authors">Lee, E.-J., <u>Liao, W.-Y.</u>, Mu, D., Wang, W., &amp; Chen, P.</span>
+        <span class="venue">Seismological Research Letters, 91(4), 2062–2074</span></div></li>
+      <li class="pub"><span class="yr">2019</span><div class="body">
+        <span class="title">Towards automated real-time detection and location of large-scale landslides through seismic waveform back projection</span>
+        <span class="authors">Lee, E.-J., <u>Liao, W.-Y.</u>, Lin, G.-W., Chen, P., Mu, D., &amp; Lin, C.-W.</span>
+        <span class="venue">Geofluids, 2019, 1–14</span></div></li>
+    </ol>
+    <p class="pub-note">Full list with citations on <a href="https://scholar.google.com/citations?user=8yUmjUsAAAAJ" target="_blank" rel="noopener">Google Scholar</a>.</p>
+  </section>
+
+  <section id="experience" aria-labelledby="exp-h">
+    <div class="two">
+      <div>
+        <h2 id="exp-h">Experience</h2>
+        <ol class="tl">
+          <li><span class="when">2026–now</span><div class="what"><b>Postdoctoral Researcher</b><span>Institute of Earth Sciences, Academia Sinica, Taipei</span><i>DAS seismic monitoring: phase picking, event location, and integration with regional seismic networks</i></div></li>
+          <li><span class="when">2024–2026</span><div class="what"><b>Postdoctoral Researcher</b><span>Department of Earth Sciences, National Cheng Kung University, Tainan</span></div></li>
+          <li><span class="when">2023</span><div class="what"><b>Visiting Researcher (Internship)</b><span>GNS Science, Lower Hutt, New Zealand</span></div></li>
+          <li><span class="when">2019–2020</span><div class="what"><b>Research Assistant</b><span>Department of Earth Sciences, National Cheng Kung University, Tainan</span></div></li>
+        </ol>
+      </div>
+      <div>
+        <h2>Education</h2>
+        <ol class="tl">
+          <li><span class="when">2020–2024</span><div class="what"><b>Ph.D., Earth Sciences</b><span>National Cheng Kung University</span><i>Assimilation of deep-learning based and physics-based seismic sources monitoring: from model setup to practical deployment. Advisor: Prof. En-Jui Lee</i></div></li>
+          <li><span class="when">2017–2019</span><div class="what"><b>M.S., Earth Sciences</b><span>National Cheng Kung University</span><i>Using deep learning for the seismic phase identification and its potential applications. Advisor: Prof. En-Jui Lee</i></div></li>
+          <li><span class="when">2013–2017</span><div class="what"><b>B.S., Earth Sciences</b><span>National Cheng Kung University</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" aria-labelledby="skills-h">
+    <h2 id="skills-h">Tools</h2>
+    <ol class="tl">
+      <li><span class="when">ML</span><div class="what"><span>Python, Bash, MATLAB · PyTorch, TensorFlow/Keras, Scikit-learn</span></div></li>
+      <li><span class="when">Seismology</span><div class="what"><span>ObsPy, SAC, GMT/PyGMT, HypoDD, GrowClust</span></div></li>
+      <li><span class="when">Computing</span><div class="what"><span>Taiwan Computing Cloud (TWCC), multi-GPU distributed training, automatic waveform processing for large seismic catalogs</span></div></li>
+      <li><span class="when">Data</span><div class="what"><span>NumPy, Pandas, Matplotlib, Cartopy, Jupyter, Git/GitHub</span></div></li>
+    </ol>
+  </section>
+
+  <section id="awards" aria-labelledby="awards-h">
+    <div class="two">
+      <div>
+        <h2 id="awards-h">Honors &amp; awards</h2>
+        <ul class="awards">
+          <li><span class="when">2022</span><span>Outstanding Award, Grand Review Doctoral Student Academic Competition, NCKU</span></li>
+          <li><span class="when">2022</span><span>Prof. Yi-Ben Tsai Graduate Student Scholarship, Geophysical Society of Taiwan</span></li>
+          <li><span class="when">2022</span><span>Aerospace Research Award, NCKU College of Science Research Exhibition</span></li>
+          <li><span class="when">2022</span><span>2nd Place, 3rd NCKU Earth Sciences Student Research Forum (Ph.D.)</span></li>
+          <li><span class="when">2021</span><span>Excellence Award, Grand Review Doctoral Student Academic Competition, NCKU</span></li>
+          <li><span class="when">2021</span><span>Honorable Mention, NCKU College of Science Research Day</span></li>
+          <li><span class="when">2021</span><span>Juan Wei-Zhou Thesis Award</span></li>
+          <li><span class="when">2021</span><span>1st Place, 2nd NCKU Earth Sciences Student Research Forum (Ph.D.)</span></li>
+          <li><span class="when">2020</span><span>Merit Award, Student Paper Competition, Geophysical Society and Geological Society of Taiwan</span></li>
+          <li><span class="when">2020</span><span>1st Place, 1st NCKU Earth Sciences Student Research Forum (Ph.D.)</span></li>
+          <li><span class="when">2020</span><span>Distinguished innovation project (ARRU Seismic Phase Picker), TWCC Star Startup Competition, National Center for High-Performance Computing</span></li>
+          <li><span class="when">2020</span><span>3rd Place, AI CUP Competition on Medical Dialogue Decision: De-identification Task, Ministry of Education</span></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Peer review</h2>
+        <ul class="review" aria-label="Journals reviewed for, with number of reviews">
+          <li>Bulletin of the Seismological Society of America<b>2</b></li>
+          <li>Journal of Geophysical Research<b>2</b></li>
+          <li>IEEE Geoscience and Remote Sensing Letters<b>2</b></li>
+          <li>Scientific Reports<b>2</b></li>
+          <li>Seismological Research Letters<b>1</b></li>
+          <li>IEEE Access<b>1</b></li>
+          <li>Frontiers in Earth Science<b>1</b></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h">Contact</h2>
+    <div class="contact">
+      <p>Institute of Earth Sciences, Academia Sinica, Taipei, Taiwan</p>
+      <div class="email-row">
+        <span class="email" id="email">tso1257771@gmail.com</span>
+        <button class="copy" id="copy-email" type="button">Copy email</button>
+        <span id="copy-status" class="visually-hidden" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Wu-Yu Liao</div>
+</footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var themeBtn = document.getElementById("theme-toggle");
+  function currentTheme() {
+    return root.getAttribute("data-theme") ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  }
+  function labelThemeBtn() {
+    themeBtn.setAttribute("aria-label", currentTheme() === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  }
+
+  // theme toggle, remembered per browser when storage is available
+  try { var saved = localStorage.getItem("theme"); if (saved) root.setAttribute("data-theme", saved); } catch (e) {}
+  labelThemeBtn();
+  themeBtn.addEventListener("click", function () {
+    var next = currentTheme() === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) {}
+    labelThemeBtn();
+    draw();
+  });
+
+  // publication filter
+  var btns = document.querySelectorAll(".seg button");
+  btns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      btns.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      var firstOnly = b.dataset.filter === "first";
+      document.querySelectorAll("#pubs .pub").forEach(function (li) {
+        li.hidden = firstOnly && li.dataset.first !== "1";
+      });
+    });
+  });
+
+  // copy email
+  var copyBtn = document.getElementById("copy-email");
+  var emailEl = document.getElementById("email");
+  var status = document.getElementById("copy-status");
+  copyBtn.addEventListener("click", function () {
+    var done = function () {
+      copyBtn.textContent = "Copied";
+      status.textContent = "Email address copied";
+      setTimeout(function () { copyBtn.textContent = "Copy email"; status.textContent = ""; }, 1800);
+    };
+    var fallback = function () {
+      var r = document.createRange(); r.selectNodeContents(emailEl);
+      var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      copyBtn.textContent = "Selected. Press Ctrl/Cmd+C";
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(emailEl.textContent).then(done, fallback);
+    } else { fallback(); }
+  });
+
+  // seismogram illustration: synthetic, seeded so it is identical on every load
+  var cv = document.getElementById("seis");
+  var ctx = cv.getContext("2d");
+  function rng(seed) { return function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  function gauss(r) { var u = r() || 1e-9, v = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+  var N = 900, P = 0.30, S = 0.52;
+  function trace(seed, pAmp, sAmp) {
+    var r = rng(seed), out = new Float32Array(N), lp = 0;
+    for (var i = 0; i < N; i++) {
+      var t = i / N, a = 0.06;
+      if (t > P) a += pAmp * Math.exp(-(t - P) * 14);
+      if (t > S) a += sAmp * Math.exp(-(t - S) * 5.5);
+      lp = 0.55 * lp + 0.45 * gauss(r);
+      out[i] = a * lp;
+    }
+    return out;
+  }
+  var comps = [["Z", trace(7, 0.55, 0.6)], ["N", trace(19, 0.22, 1.0)], ["E", trace(31, 0.2, 0.9)]];
+
+  function draw() {
+    var cs = getComputedStyle(root);
+    var col = function (n) { return cs.getPropertyValue(n).trim(); };
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var w = cv.clientWidth, h = cv.clientHeight;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    var left = 34, right = w - 12, top = 12, probH = h * 0.22, bottom = h - probH - 10;
+    var rowH = (bottom - top) / 3;
+    var mono = col("--font-mono");
+
+    ctx.strokeStyle = col("--color-border"); ctx.lineWidth = 1;
+    for (var s = 0; s <= 60; s += 10) {
+      var gx = left + (right - left) * s / 60;
+      ctx.beginPath(); ctx.moveTo(gx, top); ctx.lineTo(gx, h - 6); ctx.stroke();
+    }
+    ctx.font = "500 11px " + mono;
+    comps.forEach(function (c, k) {
+      var mid = top + rowH * (k + 0.5);
+      ctx.fillStyle = col("--color-muted-foreground"); ctx.fillText(c[0], 12, mid + 4);
+      ctx.beginPath();
+      for (var i = 0; i < N; i++) {
+        var x = left + (right - left) * i / (N - 1);
+        var y = mid - c[1][i] * rowH * 0.42;
+        if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+      }
+      ctx.strokeStyle = col("--color-trace"); ctx.lineWidth = 1; ctx.stroke();
+    });
+
+    [["P", P], ["S", S]].forEach(function (p) {
+      var x = left + (right - left) * p[1];
+      ctx.strokeStyle = col("--color-accent"); ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, h - 6); ctx.stroke();
+      ctx.fillStyle = col("--color-accent"); ctx.font = "600 13px " + mono;
+      ctx.fillText(p[0], x + 5, top + 12);
+    });
+
+    var base = h - 8, ph = probH - 8;
+    ctx.strokeStyle = col("--color-border"); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(left, base); ctx.lineTo(right, base); ctx.stroke();
+    [[P, 0.012], [S, 0.016]].forEach(function (pp) {
+      ctx.beginPath();
+      for (var i = 0; i < N; i++) {
+        var t = i / (N - 1), x = left + (right - left) * t;
+        var y = base - Math.exp(-Math.pow((t - pp[0]) / pp[1], 2)) * ph;
+        if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+      }
+      ctx.lineTo(right, base); ctx.lineTo(left, base); ctx.closePath();
+      ctx.fillStyle = col("--color-accent-soft"); ctx.fill();
+      ctx.strokeStyle = col("--color-accent"); ctx.lineWidth = 1.25; ctx.stroke();
+    });
+    ctx.fillStyle = col("--color-muted-foreground"); ctx.font = "500 10px " + mono;
+    ctx.fillText("prob", 2, base - 2);
+  }
+
+  draw();
+  var rt;
+  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(draw, 120); });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () { labelThemeBtn(); draw(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+})();
+</script>
+</body>
+</html>
